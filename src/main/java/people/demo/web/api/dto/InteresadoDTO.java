@@ -41,7 +41,7 @@ public class InteresadoDTO {
     public Interesado toEntity(InteresadoDTO interesadoDTO) {
         if (interesadoDTO == null) return null;
 
-        Interesado interesado = new Interesado();
+        Interesado interesado = new Interesado(); // podria dar problemas en update? La va a intentar guardar a la nueva entidad en la bda.
         interesado.setId(interesadoDTO.getId());
         interesado.setDocumento(interesadoDTO.getDocumento());
         interesado.setNombre(interesadoDTO.getNombre());

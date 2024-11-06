@@ -16,19 +16,19 @@ import java.util.Optional;
 
 @Service
 public class PruebaServices {
-    private PruebaReposotory pruebaReposotory;
-    private InteresadoRepository interesadoRepository;
-    private EmpleadoRepository empleadoRepository;
+    private final PruebaReposotory pruebaReposotory;
+    private final InteresadoRepository interesadoRepository;
+    private final EmpleadoRepository empleadoRepository;
     @Autowired
     public PruebaServices(PruebaReposotory pruebaReposotoryosotory, InteresadoRepository interesadoRepository, EmpleadoRepository empleadoRepository){
         this.pruebaReposotory = pruebaReposotoryosotory;
         this.interesadoRepository = interesadoRepository;
         this.empleadoRepository = empleadoRepository;
-    };
+    }
 
     public List<PruebaDTO> findAll(){
         return pruebaReposotory.findAll().stream().map(PruebaDTO::new).toList();
-    };
+    }
 
     public Optional<PruebaDTO> findById(Integer pid) {
         Optional<Prueba> prueba = pruebaReposotory.findById(pid);
@@ -46,31 +46,52 @@ public class PruebaServices {
 
         Interesado interesado = interesadoOpt.get(); // Lanza excepción si está vacío
         Empleado empleado = empleadoOpt.get();
-        Prueba prueba = pruebaReposotory.save(pruebaDTO.toEntity(pruebaDTO, interesado, empleado)); //Interesado to entity viola la ley de demeter
+        Prueba prueba = pruebaReposotory.save(PruebaDTO.toEntity(pruebaDTO, interesado, empleado)); //Interesado to entity viola la ley de demeter
         return new PruebaDTO(prueba);
     }
 
-    //public List<PruebaDTO> addAll(List<PruebaDTO> pruebaDTOS) {
-      //  List<Prueba> pruebas = pruebaReposotory.saveAll(pruebaDTOS.stream().map((PruebaDTO pruebaDTO) -> PruebaDTO.toEntity(pruebaDTO)).toList());
-       // return pruebas.stream().map(prueba -> new PruebaDTO(prueba)).toList();
-    //}
+    public Interesado buscarInteresado(int id){
+        Optional<Interesado> Optinteresado = interesadoRepository.findById(id);
+        return Optinteresado.orElse(null);
+    }
+
+    public Empleado buscarEmpleado(int id){
+        Optional<Empleado> optEmpleado = empleadoRepository.findById(id);
+        return optEmpleado.orElse(null);
+    }
+
+    public List<PruebaDTO> addAll(List<PruebaDTO> pruebaDTOS) {
+
+        List<Prueba> pruebas = pruebaReposotory.saveAll(
+                pruebaDTOS.stream()
+                        .map(pruebaDTO -> PruebaDTO.toEntity(pruebaDTO, buscarInteresado(pruebaDTO.getId_interesado()),
+                                buscarEmpleado(pruebaDTO.getLegajo_empleado())))
+                        .toList() // Convert the Stream to a List
+        );
+
+        return pruebas.stream().map(PruebaDTO::new).toList();
+    }
 
     public PruebaDTO update (Integer pid, PruebaDTO pruebaDTO) throws NullPointerException{
 
         //REVISAR----------------------------------------------------
-        Optional<Interesado> interesadoOpt = interesadoRepository.findById(pruebaDTO.getId_interesado());
-        Optional<Empleado> empleadoOpt = empleadoRepository.findById(pruebaDTO.getLegajo_empleado());
+        Interesado interesado = buscarInteresado(pruebaDTO.getId_interesado());
+        Empleado empleado = buscarEmpleado(pruebaDTO.getLegajo_empleado());
+
         //interesado
 
-        Interesado interesado = interesadoOpt.get(); // Lanza excepción si está vacío
-        Empleado empleado = empleadoOpt.get();
+
         //-------------------------------------------------------------
 
         Prueba prueba = pruebaReposotory.findById(pid).orElseThrow(
-                () -> new ResourceNotFoundException(String.format("Persona [%d] inexistente", pid))
+                () -> new ResourceNotFoundException(String.format("Prueba [%d] inexistente", pid))
         );
 
-        prueba = pruebaReposotory.save(prueba.update(pruebaDTO.toEntity(pruebaDTO, interesado, empleado)));
+       prueba.setComentarios(pruebaDTO.getComentarios());
+       prueba.setInteresado(interesado);
+       prueba.setEmpleado(empleado);
+       prueba.setFechaHoraFin(pruebaDTO.getFechaHoraFin());
+       prueba.setFechaHoraInicio(pruebaDTO.getFechaHoraInicio());
 
         return new PruebaDTO(prueba);
     }

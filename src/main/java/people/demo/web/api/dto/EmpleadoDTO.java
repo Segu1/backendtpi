@@ -32,7 +32,7 @@ public class EmpleadoDTO {
         return new EmpleadoDTO(entity);
     }
 
-    public Empleado toEntity(EmpleadoDTO empleadoDTO) {
+    public Empleado toEmpleadoEntity(EmpleadoDTO empleadoDTO) {
         if (empleadoDTO == null) return null;
 
         Empleado empleado = new Empleado();

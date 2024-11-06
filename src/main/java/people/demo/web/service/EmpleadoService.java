@@ -3,12 +3,7 @@ package people.demo.web.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import people.demo.dal.EmpleadoRepository;
-import people.demo.dal.PruebaReposotory;
 import people.demo.domain.Empleado;
-import people.demo.domain.Empleado;
-import people.demo.domain.Prueba;
-import people.demo.web.api.dto.EmpleadoDTO;
-import people.demo.web.api.dto.EmpleadoDTO;
 import people.demo.web.api.dto.EmpleadoDTO;
 import people.demo.web.api.exception.ResourceNotFoundException;
 
@@ -24,7 +19,7 @@ import java.util.Optional;
         };
 
         public List<EmpleadoDTO> findAll(){
-            return empleadoRepository.findAll().stream().map(empleado -> new EmpleadoDTO(empleado)).toList();
+            return empleadoRepository.findAll().stream().map(EmpleadoDTO::new).toList();
         };
 
         public Optional<EmpleadoDTO> findById(Integer pid) {
@@ -36,36 +31,38 @@ import java.util.Optional;
         }
 
         public EmpleadoDTO add(EmpleadoDTO empleadoDTO) {
-            Empleado interesado = empleadoRepository.save(empleadoDTO.toEntity(empleadoDTO));
-            return new EmpleadoDTO(Empleado);
+            Empleado empleado = empleadoRepository.save(empleadoDTO.toEmpleadoEntity(empleadoDTO));
+            return new EmpleadoDTO(empleado);
         }
 
-        public List<PersonaDTO> addAll(List<PersonaDTO> personaDTOS) {
-            List<PersonaEntity> personas = rep.saveAll(personaDTOS.stream().map(PersonaDTO::toPersonaEntity).toList());
-            return personas.stream().map(persona -> new PersonaDTO(persona)).toList();
+        public List<EmpleadoDTO> addAll(List<EmpleadoDTO> empleadosDTO) {
+            List<Empleado> empleados = empleadoRepository.saveAll(empleadosDTO.stream().map(empleadoDTO -> empleadoDTO.toEmpleadoEntity(empleadoDTO)).toList());
+            return empleados.stream().map(EmpleadoDTO::new).toList();
         }
 
-        public PersonaDTO update(Integer pid, PersonaDTO personaDTO) {
-            PersonaEntity persona = rep.findById(pid).orElseThrow(
-                    () -> new ResourceNotFoundException(String.format("Persona [%d] inexistente", pid))
+        public EmpleadoDTO update(Integer legajo, EmpleadoDTO empleadoDTO) {
+            Empleado empleado = empleadoRepository.findById(legajo).orElseThrow(
+                    () -> new ResourceNotFoundException(String.format("Empleado [%d] inexistente", legajo))
             );
 
-            persona = rep.save(persona.update(personaDTO.toPersonaEntity()));
+            empleado.setNombre(empleadoDTO.getNombre());
+            empleado.setTelefonoContacto(empleadoDTO.getTelefonoContacto());
+            empleado.setApellido(empleadoDTO.getApellido());
 
-            return new PersonaDTO(persona);
+            empleadoRepository.saveAndFlush(empleado);
+
+            return new EmpleadoDTO(empleado);
         }
 
-        public boolean deleteById(Integer pid) {
-            if (!rep.existsById(pid)) {
+        public boolean deleteById(Integer empid) {
+            if (!empleadoRepository.existsById(empid)) {
                 return false;
             }
 
-            rep.deleteById(pid);
+            empleadoRepository.deleteById(empid);
             return true;
         }
     }
 
 
-}
 
-}
