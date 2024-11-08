@@ -12,17 +12,17 @@ import java.util.Optional;
 
 @Service
 public class InteresadosService{
-    private InteresadoRepository InteresadoRepository;
+    private InteresadoRepository interesadoRepository;
 
     @Autowired
-    public InteresadosService(InteresadoRepository rep){this.InteresadoRepository = rep;}
+    public InteresadosService(InteresadoRepository rep){this.interesadoRepository = rep;}
 
     public List<InteresadoDTO> findAll(){
-        return InteresadoRepository.findAll().stream().map(InteresadoDTO::new).toList();
+        return interesadoRepository.findAll().stream().map(InteresadoDTO::new).toList();
     }
 
     public Optional<InteresadoDTO> findById(Integer iid) {
-        Optional<Interesado> interesado = InteresadoRepository.findById(iid);
+        Optional<Interesado> interesado = interesadoRepository.findById(iid);
 
         return interesado.isEmpty()
                 ? Optional.empty()
@@ -30,31 +30,31 @@ public class InteresadosService{
     }
 
     public InteresadoDTO add(InteresadoDTO interesadoDTO) {
-        Interesado interesado = InteresadoRepository.save(interesadoDTO.toEntity(interesadoDTO));
+        Interesado interesado = interesadoRepository.save(interesadoDTO.toEntity(interesadoDTO));
         return new InteresadoDTO(interesado);
     }
 
     public List<InteresadoDTO> addAll(List<InteresadoDTO> interesadoDTOS) {
-        List<Interesado> interesados = InteresadoRepository.saveAll(interesadoDTOS.stream().map(indto-> indto.toEntity(indto)).toList());
+        List<Interesado> interesados = interesadoRepository.saveAll(interesadoDTOS.stream().map(indto-> indto.toEntity(indto)).toList());
         return interesados.stream().map(InteresadoDTO::new).toList();
     }
 
     public InteresadoDTO update(Integer iid, InteresadoDTO interesadoDTO) {
-        Interesado interesado = InteresadoRepository.findById(iid).orElseThrow(
+        Interesado interesado = interesadoRepository.findById(iid).orElseThrow(
                 () -> new ResourceNotFoundException(String.format("Interesado [%d] inexistente", iid))
         );
 
-        interesado = InteresadoRepository.save(interesado.update(interesadoDTO.toEntity(interesadoDTO)));
+        interesado = interesadoRepository.save(interesado.update(interesadoDTO.toEntity(interesadoDTO)));
 
         return new InteresadoDTO(interesado);
     }
 
     public boolean deleteById(Integer iid) {
-        if (!InteresadoRepository.existsById(iid)) {
+        if (!interesadoRepository.existsById(iid)) {
             return false;
         }
 
-        InteresadoRepository.deleteById(iid);
+        interesadoRepository.deleteById(iid);
         return true;
     }
 }

@@ -35,4 +35,13 @@ public class Empleado {
     public Empleado() {
 
     }
+
+    public Empleado update(Empleado empleado) {
+        this.apellido = empleado.apellido;
+        this.telefonoContacto = empleado.telefonoContacto;
+        this.nombre = empleado.nombre;
+        this.legajo = empleado.legajo;
+        //this.pruebas = empleado.pruebas;
+        return this;
+    }
 }

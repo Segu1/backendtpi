@@ -52,7 +52,7 @@ public class Interesado {
         this.documento = documento;
         this.nombre = nombre;
         this.apellido = apellido;
-        this.restringido= restringido;
+        this.restringido = restringido;
         this.nro_licencia = nro_licencia;
         this.fecha_vencimiento_licencia = fecha_vencimiento_licencia;
     }
@@ -63,10 +63,10 @@ public class Interesado {
         documento = interesado.documento;
         nombre = interesado.nombre;
         apellido = interesado.apellido;
-        restringido= interesado.restringido;
+        restringido = interesado.restringido;
         nro_licencia = interesado.nro_licencia;
         fecha_vencimiento_licencia = interesado.fecha_vencimiento_licencia;
-
+        //this.pruebas = empleado.pruebas;
         return this;
     }
 }

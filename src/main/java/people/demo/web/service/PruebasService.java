@@ -15,12 +15,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class PruebaServices {
+public class PruebasService {
     private final PruebaReposotory pruebaReposotory;
     private final InteresadoRepository interesadoRepository;
     private final EmpleadoRepository empleadoRepository;
     @Autowired
-    public PruebaServices(PruebaReposotory pruebaReposotoryosotory, InteresadoRepository interesadoRepository, EmpleadoRepository empleadoRepository){
+    public PruebasService(PruebaReposotory pruebaReposotoryosotory, InteresadoRepository interesadoRepository, EmpleadoRepository empleadoRepository){
         this.pruebaReposotory = pruebaReposotoryosotory;
         this.interesadoRepository = interesadoRepository;
         this.empleadoRepository = empleadoRepository;
@@ -72,11 +72,11 @@ public class PruebaServices {
         return pruebas.stream().map(PruebaDTO::new).toList();
     }
 
-    public PruebaDTO update (Integer pid, PruebaDTO pruebaDTO) throws NullPointerException{
+    public PruebaDTO update (Integer pid, PruebaDTO pruebaDTO){
 
         //REVISAR----------------------------------------------------
-        Interesado interesado = buscarInteresado(pruebaDTO.getId_interesado());
-        Empleado empleado = buscarEmpleado(pruebaDTO.getLegajo_empleado());
+        //Interesado interesado = buscarInteresado(pruebaDTO.getId_interesado());
+        //Empleado empleado = buscarEmpleado(pruebaDTO.getLegajo_empleado());
 
         //interesado
 
