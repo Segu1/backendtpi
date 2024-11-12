@@ -24,17 +24,11 @@ public class PosicionController {
 
     }
 
-    @PostMapping("/informeKmRecorridos")
-    public ResponseEntity<Double>  calcularKMParaVehiculoEnPeriodo(@RequestBody InformeKmRequest informeKmRequest){
-        double cantidadKm = servicePosicion.calcularCantidadKm(informeKmRequest.getFechaDesde(),informeKmRequest.getFechaHasta(), informeKmRequest.getId_vehiculo());
-        return ResponseEntity.ok(cantidadKm);
 
-    }
 
     
 
-    // Hacer un controller que reciba un arrays de pruebas y avise en cuales hubo incidente y de que tipo
-    //@PostMapping("/incid
+    
 
 
 
