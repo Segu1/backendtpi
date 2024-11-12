@@ -31,6 +31,10 @@ public class Vehiculo {
         return id;
     }
 
+    public String getPatente() {
+        return patente;
+    }
+
     //public iniciarPrueba(){
 
     //}

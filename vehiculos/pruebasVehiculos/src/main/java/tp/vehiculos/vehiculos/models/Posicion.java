@@ -62,6 +62,13 @@ public class Posicion {
 
     public void fueraDeRadio(){
         this.fueraDeRadioPermitido = true;
+
+    }
+
+    public boolean estaFueraDeRadio(){return fueraDeRadioPermitido;}
+
+    public int getId() {
+        return id;
     }
 
     @Override

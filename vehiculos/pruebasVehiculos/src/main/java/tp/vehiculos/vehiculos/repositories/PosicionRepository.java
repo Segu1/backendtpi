@@ -17,7 +17,7 @@ public interface PosicionRepository extends JpaRepository<Posicion,Integer> {
                                                    @Param("idVehiculo") int idVehiculo);
 
 
-    @Query("SELECT p FROM Posicion p WHERE p.fecha BETWEEN :fechaInicio AND :fechaFin AND p.vehiculo.id = :idVehiculo AND (p.estaFueraDeRadio = true OR p.enZonaPeligrosa = true)")
+    @Query(value = "SELECT * FROM posiciones p WHERE p.fecha BETWEEN :fechaInicio AND :fechaFin AND p.id_vehiculo = :idVehiculo AND (p.fuera_de_radio_permitido = 1 OR p.en_zona_restringida = 1) LIMIT 1", nativeQuery = true)
     Optional<Posicion> findIncidente(@Param("fechaInicio") LocalDateTime fechaInicio,
                                      @Param("fechaFin") LocalDateTime fechaFin,
                                      @Param("idVehiculo") int idVehiculo);

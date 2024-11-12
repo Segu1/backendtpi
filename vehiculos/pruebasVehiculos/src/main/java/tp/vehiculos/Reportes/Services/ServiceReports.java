@@ -3,12 +3,10 @@ package tp.vehiculos.Reportes.Services;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,13 +31,32 @@ public class ServiceReports {
     private final RestTemplate restTemplate;
     private static final String APIPRUEBAS = "http://localhost:8083/pruebas";
     private static final String APIPRUEBAEMPLEADO = "http://localhost:8083/pruebasEmpleado";
+    private final String filePath = "C:/Users/Gonzalo/Desktop/backendtpi/vehiculos/pruebasVehiculos/";
 
-    private final String filePath = "C:/Users/Gonzalo/Desktop/vehiculos/pruebasVehiculos/pruebasVehiculos/";
+    //BORRAR DESDE ACA
     private static List<PruebaDTO> pruebaDTOS = new ArrayList<>();
-    private static final PruebaDTO prueba1 = new PruebaDTO("ok", new Date(), new Date(),2,  3, 4, 7 );
-    private static final PruebaDTO prueba2 = new PruebaDTO("ok", new Date(), new Date(),6,  3, 2, 8 );
-    private static final PruebaDTO prueba3 = new PruebaDTO("ok", new Date(), new Date(),7,  4, 1, 9 );
+    private static final Date fechaInicio2023;
+    private static final Date fechaFin2025;
 
+
+
+    static {
+        Calendar cal = Calendar.getInstance();
+
+        // Fecha de inicio: 7 de noviembre de 2023
+        cal.set(2023, Calendar.NOVEMBER, 7);
+        fechaInicio2023 = cal.getTime();
+
+        // Fecha de fin: 7 de noviembre de 2025
+        cal.set(2025, Calendar.NOVEMBER, 7);
+        fechaFin2025 = cal.getTime();
+    }
+
+
+    private static final PruebaDTO prueba1 = new PruebaDTO("ok", fechaInicio2023, fechaFin2025, 1, 3, 4, 7);
+    private static final PruebaDTO prueba2 = new PruebaDTO("ok", fechaInicio2023, fechaFin2025, 2, 3, 2, 8);
+    private static final PruebaDTO prueba3 = new PruebaDTO("ok", fechaInicio2023, fechaFin2025, 1, 4, 1, 9);
+    //HASTA ACA */
 
     @Autowired
     public ServiceReports(RestTemplate restTemplate, PosicionService posicionService) {
@@ -48,34 +65,35 @@ public class ServiceReports {
     }
 
     public void generarReporteIncidentes(){
-        RestTemplate restTemplate = new RestTemplate(); 
+
         //List<PruebaDTO> pruebas = restTemplate.getForObject(APIPRUEBAS, List.class);
-        pruebaDTOS.add(prueba1);
-        pruebaDTOS.add(prueba2);
-        pruebaDTOS.add(prueba3);
+        pruebaDTOS.add(prueba1); //DESPUES BORRAR
+        pruebaDTOS.add(prueba2); //DESPUES BORRAR
+        pruebaDTOS.add(prueba3); //DESPUES BORRAR
         List<Posicion> incidenList = new ArrayList<>();
 
 
         for (PruebaDTO pruebaDTO : pruebaDTOS) {
-            Optional<Posicion> incidente = posicionService.obtenerEntreFechasIncidente(pruebaDTO.getFechaInicio(), pruebaDTO.getFechaFin(), pruebaDTO.getIdVehiculo());
+            Optional<Posicion> incidente = posicionService.obtenerEntreFechasIncidente(pruebaDTO.getFechaFin(), pruebaDTO.getFechaInicio(), pruebaDTO.getIdVehiculo());
             if(incidente.isPresent()){
                 incidenList.add(incidente.get());
             }
         }
         // Especificar el nombre del archivo
-        Marca mar = new Marca(2, "fer");
-        Modelo modelo = new Modelo(1,"forFierta",mar);
-        Vehiculo vehiculo = new Vehiculo(2,"ferTieneSueño",modelo);
-        Posicion pos = new Posicion(9, vehiculo, LocalDateTime.now(), 22.2222, 45.22, false, false);
-        incidenList.add(pos);
+
         String fileName = "reporteTotalIncidentes.csv"; 
         File file = new File(filePath + fileName);
         try (PrintWriter printWriter = new PrintWriter(file)) {
-            printWriter.println(format("%s %s %s %s %s", "IDIncidente","IDVehículo","Fecha","Latitud","Longitud"));
+            printWriter.println(format("%s %s %s %s %s", "Tipo Incidente","Patente Vehiculo","Fecha","Latitud","Longitud"));
             incidenList.forEach(inc -> {
+                String tipoIncidente = "";
+                if(inc.estaFueraDeRadio()){tipoIncidente = "Salió del radio permitido";
+                }else{tipoIncidente= "Entró a zona peligrosa";}
+
+
                 printWriter.println(String.format("%s,%s,%s,%s,%s",
-                        inc.getId(),
-                        inc.getVehiculo().getId(),
+                        tipoIncidente,
+                        inc.getVehiculo().getPatente(),
                         inc.getFecha().toString(),
                         inc.getLatitud(),
                         inc.getLongitud()
@@ -89,7 +107,7 @@ public class ServiceReports {
 
 
     public void generarReporteIncidentesEmpleado(){
-        RestTemplate restTemplate = new RestTemplate(); 
+
         List<PruebaDTO> pruebas = restTemplate.getForObject(APIPRUEBAEMPLEADO, List.class); 
         List<Posicion> incidenList = new ArrayList<>();
 
@@ -102,20 +120,25 @@ public class ServiceReports {
         String fileName = "reporteIncidentesEmpleado.csv"; 
         File file = new File(fileName + filePath);
         try (PrintWriter printWriter = new PrintWriter(file)) {
-            printWriter.println(format("%s %s %s %s %s", "IDIncidente","IDVehículo","Fecha","Latitud","Longitud"));
+            printWriter.println(format("%s %s %s %s %s", "Tipo Incidente","Patente Vehiculo","Fecha","Latitud","Longitud"));
             incidenList.forEach(inc -> {
+                String tipoIncidente = "";
+                if(inc.estaFueraDeRadio()){tipoIncidente = "Salió del radio permitido";
+                }else{tipoIncidente= "Entró a zona peligrosa";}
+
+
                 printWriter.println(String.format("%s,%s,%s,%s,%s",
-                        inc.getId(),
-                        inc.getVehiculo().getId(),
+                        tipoIncidente,
+                        inc.getVehiculo().getPatente(),
                         inc.getFecha().toString(),
                         inc.getLatitud(),
                         inc.getLongitud()
-                        ));
+                ));
             });
         }
         catch (FileNotFoundException e) {
             throw new RuntimeException(e);
-        }   
+        }
     }
 
 
