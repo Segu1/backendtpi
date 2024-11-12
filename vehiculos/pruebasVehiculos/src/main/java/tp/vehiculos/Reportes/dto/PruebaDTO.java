@@ -23,6 +23,16 @@ public class PruebaDTO {
     private String comentarios;
 
 
+    public PruebaDTO(String comentarios, Date fechaHoraFin, Date fechaHoraInicio, Integer idVehiculo, Integer legajo_empleado, Integer id_interesado, Integer id) {
+        this.comentarios = comentarios;
+        this.fechaHoraFin = fechaHoraFin;
+        this.fechaHoraInicio = fechaHoraInicio;
+        this.idVehiculo = idVehiculo;
+        this.legajo_empleado = legajo_empleado;
+        this.id_interesado = id_interesado;
+        this.id = id;
+    }
+
 
     public LocalDateTime getFechaInicio() {
 
