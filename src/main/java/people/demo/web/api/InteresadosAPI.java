@@ -40,8 +40,8 @@ public class InteresadosAPI {
     }
 
     @PostMapping
-    public ResponseEntity<InteresadoDTO> addInteresado(@RequestBody @Valid InteresadoDTO InteresadoDTO) {
-        return new ResponseEntity<>(interesadosService.add(InteresadoDTO), HttpStatus.CREATED);
+    public ResponseEntity<InteresadoDTO> addInteresado(@RequestBody @Valid InteresadoDTO interesadoDTO) {
+        return new ResponseEntity<>(interesadosService.add(interesadoDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

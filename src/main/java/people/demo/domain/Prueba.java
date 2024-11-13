@@ -35,6 +35,8 @@ public class Prueba {
     @Basic
     private String comentarios;
 
+    private int idVehiculo;
+
 
     public Prueba() {}
 
