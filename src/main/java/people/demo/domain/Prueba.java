@@ -13,7 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString
 @Entity
-@Table(name = "prueba")
+@Table(name = "Pruebas")
 public class Prueba {
     @Id
     private Integer id;

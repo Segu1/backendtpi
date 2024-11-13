@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import people.demo.dal.EmpleadoRepository;
 import people.demo.dal.InteresadoRepository;
-import people.demo.dal.PruebaReposotory;
+import people.demo.dal.PruebaRepository;
 import people.demo.domain.Empleado;
 import people.demo.domain.Interesado;
 import people.demo.domain.Prueba;
@@ -15,23 +15,23 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class PruebaServices {
-    private final PruebaReposotory pruebaReposotory;
+public class PruebasService {
+    private final PruebaRepository pruebaRepository;
     private final InteresadoRepository interesadoRepository;
     private final EmpleadoRepository empleadoRepository;
     @Autowired
-    public PruebaServices(PruebaReposotory pruebaReposotoryosotory, InteresadoRepository interesadoRepository, EmpleadoRepository empleadoRepository){
-        this.pruebaReposotory = pruebaReposotoryosotory;
+    public PruebasService(PruebaRepository pruebaReposotoryosotory, InteresadoRepository interesadoRepository, EmpleadoRepository empleadoRepository){
+        this.pruebaRepository = pruebaReposotoryosotory;
         this.interesadoRepository = interesadoRepository;
         this.empleadoRepository = empleadoRepository;
     }
 
     public List<PruebaDTO> findAll(){
-        return pruebaReposotory.findAll().stream().map(PruebaDTO::new).toList();
+        return pruebaRepository.findAll().stream().map(PruebaDTO::new).toList();
     }
 
     public Optional<PruebaDTO> findById(Integer pid) {
-        Optional<Prueba> prueba = pruebaReposotory.findById(pid);
+        Optional<Prueba> prueba = pruebaRepository.findById(pid);
 
         return prueba.isEmpty()
                 ? Optional.empty()
@@ -46,7 +46,7 @@ public class PruebaServices {
 
         Interesado interesado = interesadoOpt.get(); // Lanza excepción si está vacío
         Empleado empleado = empleadoOpt.get();
-        Prueba prueba = pruebaReposotory.save(PruebaDTO.toEntity(pruebaDTO, interesado, empleado)); //Interesado to entity viola la ley de demeter
+        Prueba prueba = pruebaRepository.save(PruebaDTO.toEntity(pruebaDTO, interesado, empleado)); //Interesado to entity viola la ley de demeter
         return new PruebaDTO(prueba);
     }
 
@@ -62,7 +62,7 @@ public class PruebaServices {
 
     public List<PruebaDTO> addAll(List<PruebaDTO> pruebaDTOS) {
 
-        List<Prueba> pruebas = pruebaReposotory.saveAll(
+        List<Prueba> pruebas = pruebaRepository.saveAll(
                 pruebaDTOS.stream()
                         .map(pruebaDTO -> PruebaDTO.toEntity(pruebaDTO, buscarInteresado(pruebaDTO.getId_interesado()),
                                 buscarEmpleado(pruebaDTO.getLegajo_empleado())))
@@ -83,7 +83,7 @@ public class PruebaServices {
 
         //-------------------------------------------------------------
 
-        Prueba prueba = pruebaReposotory.findById(pid).orElseThrow(
+        Prueba prueba = pruebaRepository.findById(pid).orElseThrow(
                 () -> new ResourceNotFoundException(String.format("Prueba [%d] inexistente", pid))
         );
 
@@ -97,11 +97,11 @@ public class PruebaServices {
     }
 
     public boolean deleteById(Integer pid) {
-        if (!pruebaReposotory.existsById(pid)) {
+        if (!pruebaRepository.existsById(pid)) {
             return false;
         }
 
-        pruebaReposotory.deleteById(pid);
+        pruebaRepository.deleteById(pid);
         return true;
     }
 }

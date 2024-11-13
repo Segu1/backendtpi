@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import people.demo.domain.Notificacion;
 import people.demo.web.api.dto.NotificacionDTO;
 import people.demo.web.service.NotificacionService;
 
@@ -24,9 +23,8 @@ public class NotificacionesAPI {
     }
 
     @PostMapping
-    public ResponseEntity<Notificacion> addNotificacion(@RequestBody @Valid NotificacionDTO notificacionDTO) {
-        notificacionService.add(notificacionDTO);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<NotificacionDTO> addNotificacion(@RequestBody @Valid NotificacionDTO notificacionDTO) {
+        return new ResponseEntity<>(notificacionService.add(notificacionDTO), HttpStatus.CREATED);
     }
 
 }

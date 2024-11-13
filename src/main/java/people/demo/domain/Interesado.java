@@ -37,6 +37,8 @@ public class Interesado {
 
     private Date fecha_vencimiento_licencia;
 
+    private String email;
+
     @OneToMany(mappedBy = "interesado")
     private Set<Prueba> pruebas = new HashSet<>();
 

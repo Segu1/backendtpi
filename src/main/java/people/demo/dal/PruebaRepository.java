@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import people.demo.domain.Prueba;
 
-public interface PruebaReposotory extends JpaRepository<Prueba, Integer> {
+public interface PruebaRepository extends JpaRepository<Prueba, Integer> {
      @Query("SELECT p FROM Prueba p WHERE p.idVehiculo = :idVehiculo AND p.fechaHoraFin IS NULL")
      Prueba findPruebaActual(@Param("idVehiculo") int idVehiculo);
     }
